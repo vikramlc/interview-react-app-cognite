@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FriendList from "./components/FriendList";
+import GroupList from "./components/GroupList";
 import ChatWindow from "./components/ChatWindow";
 import "./App.css";
 
@@ -10,31 +11,50 @@ const App = () => {
     { id: 3, name: "Charlie" },
   ]);
 
-  const [currentFriend, setCurrentFriend] = useState(null);
+  const [groups, setGroups] = useState([
+    { id: 1, name: "Group A", members: [1, 2] },
+    { id: 2, name: "Group B", members: [2, 3] },
+  ]);
+
+  const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState({});
 
-  const handleSelectFriend = (friend) => {
-    setCurrentFriend(friend);
+  const handleSelectChat = (chat) => {
+    setCurrentChat(chat);
   };
 
   const handleSendMessage = (message) => {
-    if (currentFriend) {
+    if (currentChat) {
       setMessages((prevMessages) => ({
         ...prevMessages,
-        [currentFriend.id]: [
-          ...(prevMessages[currentFriend.id] || []),
-          message,
-        ],
+        [currentChat.id]: [...(prevMessages[currentChat.id] || []), message],
       }));
     }
   };
 
+  const handleAddGroup = (name, members) => {
+    const newGroup = {
+      id: groups.length + 1,
+      name: name,
+      members: members,
+    };
+    setGroups([...groups, newGroup]);
+  };
+
   return (
     <div className="App">
-      <FriendList friends={friends} onSelectFriend={handleSelectFriend} />
+      <div className="sidebar">
+        <FriendList friends={friends} onSelectFriend={handleSelectChat} />
+        <GroupList
+          groups={groups}
+          friends={friends}
+          onSelectGroup={handleSelectChat}
+          onAddGroup={handleAddGroup}
+        />
+      </div>
       <ChatWindow
-        friend={currentFriend}
-        messages={currentFriend ? messages[currentFriend.id] || [] : []}
+        chat={currentChat}
+        messages={currentChat ? messages[currentChat.id] || [] : []}
         onSendMessage={handleSendMessage}
       />
     </div>

@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 
-const ChatWindow = ({ friend, messages, onSendMessage }) => {
+const ChatWindow = ({ chat, messages, onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() !== "") {
-      onSendMessage(newMessage);
-      setNewMessage("");
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      if (newMessage.trim() !== "") {
+        onSendMessage(newMessage);
+        setNewMessage("");
+      }
     }
   };
 
   return (
     <div className="chat-window">
-      {friend ? (
+      {chat ? (
         <>
-          <h3>Chat with {friend.name}</h3>
+          <h3>Chat with {chat.name}</h3>
           <div className="messages">
             {messages.map((message, index) => (
               <div key={index} className="message">
@@ -26,12 +28,12 @@ const ChatWindow = ({ friend, messages, onSendMessage }) => {
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder="Type a message"
-            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
           />
         </>
       ) : (
-        <h3>Select a friend to start chatting</h3>
+        <h3>Select a friend or group to start chatting</h3>
       )}
     </div>
   );
