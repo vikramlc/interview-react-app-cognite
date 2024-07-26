@@ -27,8 +27,8 @@ const ChatWindow = ({ friend, messages, onSendMessage }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message"
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
           />
-          <button onClick={handleSendMessage}>Send</button>
         </>
       ) : (
         <h3>Select a friend to start chatting</h3>
