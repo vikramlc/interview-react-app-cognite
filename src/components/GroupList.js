@@ -1,26 +1,20 @@
 import React, { useState } from "react";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Typography,
-  TextField,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Avatar,
-} from "@mui/material";
+import "./GroupList.css"; // Create this CSS file for custom styling
 
 const GroupList = ({ groups, friends, onSelectGroup, onAddGroup }) => {
   const [newGroupName, setNewGroupName] = useState("");
   const [selectedFriends, setSelectedFriends] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
 
   const handleAddGroup = () => {
     if (newGroupName.trim() !== "" && selectedFriends.length > 0) {
       onAddGroup(newGroupName, selectedFriends);
       setNewGroupName("");
       setSelectedFriends([]);
+      handleCloseDialog();
     }
   };
 
@@ -33,65 +27,69 @@ const GroupList = ({ groups, friends, onSelectGroup, onAddGroup }) => {
   };
 
   return (
-    <div
-      style={{
-        width: 300,
-        borderRight: "1px solid #ddd",
-        height: "100vh",
-        overflowY: "auto",
-      }}
-    >
-      <Typography variant="h6" style={{ padding: 16 }}>
-        Groups
-      </Typography>
-      <Divider />
-      <List>
+    <div className="group-list">
+      <div className="header">Groups</div>
+      <div className="list">
         {groups.map((group) => (
-          <ListItem
-            button
+          <div
+            className="list-item"
             key={group.id}
             onClick={() => onSelectGroup(group)}
-            style={{ padding: 16 }}
           >
-            <Avatar style={{ marginRight: 16 }}>{group.name[0]}</Avatar>
-            <ListItemText primary={group.name} />
-          </ListItem>
+            <div className="avatar">{group.name[0]}</div>
+            <div className="list-item-text">
+              <div className="group-name">{group.name}</div>
+              <div className="group-members">
+                Members:{" "}
+                {group.members
+                  .map((id) => {
+                    const friend = friends.find((f) => f.id === id);
+                    return friend ? friend.name : "Unknown";
+                  })
+                  .join(", ")}
+              </div>
+            </div>
+          </div>
         ))}
-      </List>
-      <Typography variant="h6" style={{ padding: 16 }}>
+      </div>
+      <button className="add-group-button" onClick={handleOpenDialog}>
         Create New Group
-      </Typography>
-      <TextField
-        fullWidth
-        label="Group Name"
-        value={newGroupName}
-        onChange={(e) => setNewGroupName(e.target.value)}
-        style={{ marginBottom: 16 }}
-      />
-      <Typography variant="subtitle1" style={{ marginBottom: 8 }}>
-        Select Friends:
-      </Typography>
-      {friends.map((friend) => (
-        <FormControlLabel
-          key={friend.id}
-          control={
-            <Checkbox
-              checked={selectedFriends.includes(friend.id)}
-              onChange={() => handleFriendSelection(friend.id)}
+      </button>
+      {openDialog && (
+        <div className="dialog">
+          <div className="dialog-content">
+            <div className="dialog-header">Create New Group</div>
+            <input
+              type="text"
+              placeholder="Group Name"
+              value={newGroupName}
+              onChange={(e) => setNewGroupName(e.target.value)}
+              className="input-field"
             />
-          }
-          label={friend.name}
-        />
-      ))}
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={handleAddGroup}
-        style={{ marginTop: 16 }}
-      >
-        Add Group
-      </Button>
+            <div className="friend-selection">
+              <div className="friend-selection-header">Select Friends:</div>
+              {friends.map((friend) => (
+                <label key={friend.id} className="friend-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedFriends.includes(friend.id)}
+                    onChange={() => handleFriendSelection(friend.id)}
+                  />
+                  {friend.name}
+                </label>
+              ))}
+            </div>
+            <div className="dialog-actions">
+              <button onClick={handleCloseDialog} className="cancel-button">
+                Cancel
+              </button>
+              <button onClick={handleAddGroup} className="confirm-button">
+                Add Group
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

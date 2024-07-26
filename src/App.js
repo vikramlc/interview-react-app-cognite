@@ -25,9 +25,16 @@ const App = () => {
 
   const handleSendMessage = (message) => {
     if (currentChat) {
+      const senderId = 1; // Simulate sender ID
+      const senderName = friends.find((f) => f.id === senderId)
+        ? friends.find((f) => f.id === senderId).name
+        : "Unknown";
       setMessages((prevMessages) => ({
         ...prevMessages,
-        [currentChat.id]: [...(prevMessages[currentChat.id] || []), message],
+        [currentChat.id]: [
+          ...(prevMessages[currentChat.id] || []),
+          { text: message, sender: senderName },
+        ],
       }));
     }
   };
@@ -56,6 +63,8 @@ const App = () => {
         chat={currentChat}
         messages={currentChat ? messages[currentChat.id] || [] : []}
         onSendMessage={handleSendMessage}
+        friends={friends}
+        groups={groups}
       />
     </div>
   );
