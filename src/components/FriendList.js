@@ -1,16 +1,28 @@
 import React from "react";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Typography,
+} from "@mui/material";
 
 const FriendList = ({ friends, onSelectFriend }) => {
   return (
-    <div className="friend-list">
-      <h3>Friends</h3>
-      <ul>
+    <div style={{ width: 250, borderRight: "1px solid #ddd", padding: 16 }}>
+      <Typography variant="h6">Friends</Typography>
+      <Divider />
+      <List>
         {friends.map((friend) => (
-          <li key={friend.id} onClick={() => onSelectFriend(friend)}>
-            {friend.name}
-          </li>
+          <ListItem
+            button
+            key={friend.id}
+            onClick={() => onSelectFriend(friend)}
+          >
+            <ListItemText primary={friend.name} />
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 };

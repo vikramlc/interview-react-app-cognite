@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { TextField, Button, Typography, Paper } from "@mui/material";
 
 const ChatWindow = ({ chat, messages, onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
@@ -13,27 +14,37 @@ const ChatWindow = ({ chat, messages, onSendMessage }) => {
   };
 
   return (
-    <div className="chat-window">
+    <div
+      style={{ flex: 1, display: "flex", flexDirection: "column", padding: 16 }}
+    >
       {chat ? (
         <>
-          <h3>Chat with {chat.name}</h3>
-          <div className="messages">
+          <Typography variant="h6">Chat with {chat.name}</Typography>
+          <Paper
+            style={{
+              flex: 1,
+              padding: 16,
+              marginBottom: 16,
+              overflowY: "auto",
+            }}
+          >
             {messages.map((message, index) => (
-              <div key={index} className="message">
+              <Typography key={index} paragraph>
                 {message}
-              </div>
+              </Typography>
             ))}
-          </div>
-          <input
-            type="text"
+          </Paper>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Type a message"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type a message"
           />
         </>
       ) : (
-        <h3>Select a friend or group to start chatting</h3>
+        <Typography>Select a friend or group to start chatting</Typography>
       )}
     </div>
   );

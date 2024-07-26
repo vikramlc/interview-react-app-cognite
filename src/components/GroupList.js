@@ -1,4 +1,15 @@
 import React, { useState } from "react";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Typography,
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 
 const GroupList = ({ groups, friends, onSelectGroup, onAddGroup }) => {
   const [newGroupName, setNewGroupName] = useState("");
@@ -21,36 +32,49 @@ const GroupList = ({ groups, friends, onSelectGroup, onAddGroup }) => {
   };
 
   return (
-    <div className="group-list">
-      <h3>Groups</h3>
-      <ul>
+    <div style={{ width: 250, borderRight: "1px solid #ddd", padding: 16 }}>
+      <Typography variant="h6">Groups</Typography>
+      <Divider />
+      <List>
         {groups.map((group) => (
-          <li key={group.id} onClick={() => onSelectGroup(group)}>
-            {group.name}
-          </li>
+          <ListItem button key={group.id} onClick={() => onSelectGroup(group)}>
+            <ListItemText primary={group.name} />
+          </ListItem>
         ))}
-      </ul>
-      <h4>Create New Group</h4>
-      <input
-        type="text"
+      </List>
+      <Typography variant="h6" style={{ marginTop: 16 }}>
+        Create New Group
+      </Typography>
+      <TextField
+        fullWidth
+        label="Group name"
         value={newGroupName}
         onChange={(e) => setNewGroupName(e.target.value)}
-        placeholder="Group name"
+        style={{ marginTop: 8 }}
       />
-      <div className="friend-selection">
-        <h5>Select Friends:</h5>
-        {friends.map((friend) => (
-          <div key={friend.id}>
-            <input
-              type="checkbox"
+      <Typography variant="subtitle1" style={{ marginTop: 16 }}>
+        Select Friends:
+      </Typography>
+      {friends.map((friend) => (
+        <FormControlLabel
+          key={friend.id}
+          control={
+            <Checkbox
               checked={selectedFriends.includes(friend.id)}
               onChange={() => handleFriendSelection(friend.id)}
             />
-            {friend.name}
-          </div>
-        ))}
-      </div>
-      <button onClick={handleAddGroup}>Add Group</button>
+          }
+          label={friend.name}
+        />
+      ))}
+      <Button
+        variant="contained"
+        color="primary"
+        style={{ marginTop: 16 }}
+        onClick={handleAddGroup}
+      >
+        Add Group
+      </Button>
     </div>
   );
 };
