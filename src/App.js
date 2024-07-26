@@ -1,70 +1,73 @@
 import React, { useState } from "react";
-import FriendList from "./components/FriendList";
 import GroupList from "./components/GroupList";
 import ChatWindow from "./components/ChatWindow";
-import "./App.css";
 
 const App = () => {
-  const [friends] = useState([
+  const [friends, setFriends] = useState([
     { id: 1, name: "Alice" },
     { id: 2, name: "Bob" },
     { id: 3, name: "Charlie" },
   ]);
 
-  const [groups, setGroups] = useState([
-    { id: 1, name: "Group A", members: [1, 2] },
-    { id: 2, name: "Group B", members: [2, 3] },
-  ]);
-
+  const [groups, setGroups] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState({});
+  const [selectedFriend, setSelectedFriend] = useState(null);
 
-  const handleSelectChat = (chat) => {
-    setCurrentChat(chat);
+  const handleSelectGroup = (group) => {
+    setCurrentChat(group);
+    setSelectedFriend(null); // Clear selected friend when switching to a group
   };
 
-  const handleSendMessage = (message) => {
-    if (currentChat) {
-      const senderId = 1; // Simulate sender ID
-      const senderName = friends.find((f) => f.id === senderId)
-        ? friends.find((f) => f.id === senderId).name
-        : "Unknown";
+  const handleAddGroup = (groupName, memberIds) => {
+    const newGroup = {
+      id: groups.length + 1,
+      name: groupName,
+      members: memberIds,
+    };
+    setGroups([...groups, newGroup]);
+    setCurrentChat(newGroup);
+  };
+
+  const handleSelectFriend = (friend) => {
+    setSelectedFriend(friend);
+    setCurrentChat(null); // Clear current chat when switching to a friend
+  };
+
+  const handleSendMessage = (text) => {
+    if (currentChat || selectedFriend) {
+      const sender = friends.find((f) => f.id === 1); // Simulate sender ID
+      const senderName = sender ? sender.name : "Unknown";
+      const chatId = currentChat ? currentChat.id : selectedFriend.id;
       setMessages((prevMessages) => ({
         ...prevMessages,
-        [currentChat.id]: [
-          ...(prevMessages[currentChat.id] || []),
-          { text: message, sender: senderName },
+        [chatId]: [
+          ...(prevMessages[chatId] || []),
+          { text, sender: senderName },
         ],
       }));
     }
   };
 
-  const handleAddGroup = (name, members) => {
-    const newGroup = {
-      id: groups.length + 1,
-      name: name,
-      members: members,
-    };
-    setGroups([...groups, newGroup]);
-  };
-
   return (
-    <div className="App">
-      <div className="sidebar">
-        <FriendList friends={friends} onSelectFriend={handleSelectChat} />
-        <GroupList
-          groups={groups}
-          friends={friends}
-          onSelectGroup={handleSelectChat}
-          onAddGroup={handleAddGroup}
-        />
-      </div>
+    <div style={{ display: "flex", height: "100vh" }}>
+      <GroupList
+        groups={groups}
+        friends={friends}
+        onSelectGroup={handleSelectGroup}
+        onSelectFriend={handleSelectFriend}
+        onAddGroup={handleAddGroup}
+        selectedFriend={selectedFriend} // Pass selectedFriend prop
+      />
       <ChatWindow
-        chat={currentChat}
-        messages={currentChat ? messages[currentChat.id] || [] : []}
+        chat={currentChat || selectedFriend}
+        messages={
+          currentChat || selectedFriend
+            ? messages[currentChat ? currentChat.id : selectedFriend.id] || []
+            : []
+        }
         onSendMessage={handleSendMessage}
         friends={friends}
-        groups={groups}
       />
     </div>
   );

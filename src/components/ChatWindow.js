@@ -1,77 +1,48 @@
 import React, { useState } from "react";
-import "./ChatWindow.css"; // Create this CSS file for custom styling
+import "./ChatWindow.css"; // Ensure this CSS file is created with appropriate styles
 
 const ChatWindow = ({ chat, messages, onSendMessage, friends }) => {
-  const [newMessage, setNewMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      if (newMessage.trim() !== "") {
-        onSendMessage(newMessage);
-        setNewMessage("");
-      }
-    }
-  };
+  if (!chat) {
+    return (
+      <div className="chat-window">
+        Select a friend or group to start chatting
+      </div>
+    );
+  }
 
-  const getGroupMemberNames = (groupId) => {
-    const group = friends.find((f) => f.id === groupId);
-    if (group && group.members) {
-      return group.members
-        .map((id) => {
-          const friend = friends.find((f) => f.id === id);
-          return friend ? friend.name : "Unknown";
-        })
-        .join(", ");
+  const handleSend = () => {
+    if (message.trim()) {
+      onSendMessage(message);
+      setMessage("");
     }
-    return "";
   };
 
   return (
     <div className="chat-window">
-      {chat ? (
-        <>
-          <div className="chat-header">
-            <div className="chat-title">{chat.name}</div>
-            {chat.members && (
-              <div className="chat-members">
-                {chat.members
-                  .map((id) => {
-                    const friend = friends.find((f) => f.id === id);
-                    return friend ? friend.name : "Unknown";
-                  })
-                  .join(", ")}
-              </div>
-            )}
+      <div className="chat-header">{chat.name}</div>
+      <div className="chat-body">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`message ${msg.sender === "You" ? "sent" : "received"}`}
+          >
+            <div className="message-sender">{msg.sender}</div>
+            <div className="message-text">{msg.text}</div>
           </div>
-          <div className="messages">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`message ${
-                  msg.sender === "Alice" ? "sent" : "received"
-                }`}
-              >
-                <div className="message-bubble">
-                  <div className="message-text">{msg.text}</div>
-                  <div className="message-sender">{msg.sender}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <input
-            type="text"
-            placeholder="Type a message"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="message-input"
-          />
-        </>
-      ) : (
-        <div className="placeholder">
-          Select a friend or group to start chatting
-        </div>
-      )}
+        ))}
+      </div>
+      <div className="chat-footer">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && handleSend()}
+          placeholder="Type a message"
+        />
+        <button onClick={handleSend}>Send</button>
+      </div>
     </div>
   );
 };
