@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { TextField, Button, Typography, Paper } from "@mui/material";
+import { TextField, Button, Typography, Paper, Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const MessageBubble = styled(Paper)(({ theme, sender }) => ({
+  padding: 10,
+  margin: "5px 0",
+  maxWidth: "75%",
+  backgroundColor: sender ? "#dcf8c6" : "#ffffff",
+  alignSelf: sender ? "flex-end" : "flex-start",
+}));
 
 const ChatWindow = ({ chat, messages, onSendMessage }) => {
   const [newMessage, setNewMessage] = useState("");
@@ -20,20 +29,22 @@ const ChatWindow = ({ chat, messages, onSendMessage }) => {
       {chat ? (
         <>
           <Typography variant="h6">Chat with {chat.name}</Typography>
-          <Paper
+          <Box
             style={{
               flex: 1,
-              padding: 16,
-              marginBottom: 16,
               overflowY: "auto",
+              padding: 16,
+              border: "1px solid #ddd",
+              borderRadius: 8,
+              backgroundColor: "#f8f9fa",
             }}
           >
             {messages.map((message, index) => (
-              <Typography key={index} paragraph>
+              <MessageBubble key={index} sender={index % 2 === 0}>
                 {message}
-              </Typography>
+              </MessageBubble>
             ))}
-          </Paper>
+          </Box>
           <TextField
             fullWidth
             variant="outlined"
@@ -41,6 +52,7 @@ const ChatWindow = ({ chat, messages, onSendMessage }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
+            style={{ marginTop: 16 }}
           />
         </>
       ) : (

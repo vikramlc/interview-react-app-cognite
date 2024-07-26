@@ -5,12 +5,22 @@ import {
   ListItemText,
   Divider,
   Typography,
+  Avatar,
 } from "@mui/material";
 
 const FriendList = ({ friends, onSelectFriend }) => {
   return (
-    <div style={{ width: 250, borderRight: "1px solid #ddd", padding: 16 }}>
-      <Typography variant="h6">Friends</Typography>
+    <div
+      style={{
+        width: 300,
+        borderRight: "1px solid #ddd",
+        height: "100vh",
+        overflowY: "auto",
+      }}
+    >
+      <Typography variant="h6" style={{ padding: 16 }}>
+        Friends
+      </Typography>
       <Divider />
       <List>
         {friends.map((friend) => (
@@ -18,7 +28,9 @@ const FriendList = ({ friends, onSelectFriend }) => {
             button
             key={friend.id}
             onClick={() => onSelectFriend(friend)}
+            style={{ padding: 16 }}
           >
+            <Avatar style={{ marginRight: 16 }}>{friend.name[0]}</Avatar>
             <ListItemText primary={friend.name} />
           </ListItem>
         ))}

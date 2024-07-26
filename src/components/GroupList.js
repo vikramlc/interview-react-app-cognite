@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  Avatar,
 } from "@mui/material";
 
 const GroupList = ({ groups, friends, onSelectGroup, onAddGroup }) => {
@@ -32,27 +33,42 @@ const GroupList = ({ groups, friends, onSelectGroup, onAddGroup }) => {
   };
 
   return (
-    <div style={{ width: 250, borderRight: "1px solid #ddd", padding: 16 }}>
-      <Typography variant="h6">Groups</Typography>
+    <div
+      style={{
+        width: 300,
+        borderRight: "1px solid #ddd",
+        height: "100vh",
+        overflowY: "auto",
+      }}
+    >
+      <Typography variant="h6" style={{ padding: 16 }}>
+        Groups
+      </Typography>
       <Divider />
       <List>
         {groups.map((group) => (
-          <ListItem button key={group.id} onClick={() => onSelectGroup(group)}>
+          <ListItem
+            button
+            key={group.id}
+            onClick={() => onSelectGroup(group)}
+            style={{ padding: 16 }}
+          >
+            <Avatar style={{ marginRight: 16 }}>{group.name[0]}</Avatar>
             <ListItemText primary={group.name} />
           </ListItem>
         ))}
       </List>
-      <Typography variant="h6" style={{ marginTop: 16 }}>
+      <Typography variant="h6" style={{ padding: 16 }}>
         Create New Group
       </Typography>
       <TextField
         fullWidth
-        label="Group name"
+        label="Group Name"
         value={newGroupName}
         onChange={(e) => setNewGroupName(e.target.value)}
-        style={{ marginTop: 8 }}
+        style={{ marginBottom: 16 }}
       />
-      <Typography variant="subtitle1" style={{ marginTop: 16 }}>
+      <Typography variant="subtitle1" style={{ marginBottom: 8 }}>
         Select Friends:
       </Typography>
       {friends.map((friend) => (
@@ -70,8 +86,9 @@ const GroupList = ({ groups, friends, onSelectGroup, onAddGroup }) => {
       <Button
         variant="contained"
         color="primary"
-        style={{ marginTop: 16 }}
+        fullWidth
         onClick={handleAddGroup}
+        style={{ marginTop: 16 }}
       >
         Add Group
       </Button>
