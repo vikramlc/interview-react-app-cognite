@@ -1,21 +1,44 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import FriendList from "./components/FriendList";
+import ChatWindow from "./components/ChatWindow";
+import "./App.css";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Cognite interview boilerplate</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
-}
+const App = () => {
+  const [friends] = useState([
+    { id: 1, name: "Alice" },
+    { id: 2, name: "Bob" },
+    { id: 3, name: "Charlie" },
+  ]);
+
+  const [currentFriend, setCurrentFriend] = useState(null);
+  const [messages, setMessages] = useState({});
+
+  const handleSelectFriend = (friend) => {
+    setCurrentFriend(friend);
+  };
+
+  const handleSendMessage = (message) => {
+    if (currentFriend) {
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        [currentFriend.id]: [
+          ...(prevMessages[currentFriend.id] || []),
+          message,
+        ],
+      }));
+    }
+  };
+
+  return (
+    <div className="App">
+      <FriendList friends={friends} onSelectFriend={handleSelectFriend} />
+      <ChatWindow
+        friend={currentFriend}
+        messages={currentFriend ? messages[currentFriend.id] || [] : []}
+        onSendMessage={handleSendMessage}
+      />
+    </div>
+  );
+};
 
 export default App;
